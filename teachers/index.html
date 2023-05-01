@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orario Luigi Di Savoia</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1 onclick="document.location='/home'">Orario Luigi Di Savoia</h1>
+    <div class="spacer"></div>
+    <div class="container">
+        <select id="sel1">
+        </select>
+    </div>
+    <div class="spacer"></div>
+
+    <table>
+        <tbody>
+        </tbody>
+    </table>
+
+
+    <script>
+        const queryString = window.location.search;
+        console.log(queryString);
+        const urlParams = new URLSearchParams(queryString);
+        var selectedTeacher = urlParams.get("teacher")
+        let teacherNamesSorted = []
+        let data = {}
+        let sel1;
+
+
+        const colors = {
+            "#FFC7B7": "black",
+            "#B5EAD7": "black",
+            "#C5C1FF": "black",
+            "#FFF7B7": "black",
+            "#FFB2D9": "black",
+            "#FFD8B7": "black",
+            "#FFC6E7": "black",
+            "#D9C1B7": "black",
+            "#E2E2E2": "black",
+            "#626262": "white",
+            "#C5E5E5": "black",
+            "#99B2DD": "black",
+            "#F2C2B7": "black",
+            "#C2D1B7": "black",
+            "#D8B2D9": "black",
+            "#E5D8C2": "black",
+            "#F7C5FF": "black",
+            "#FFC2E2": "black",
+            "#B7E2C2": "black",
+            "#E2C2B7": "black"
+        }
+
+        const hours = [
+            "8.05",
+            "8.55",
+            "9.50",
+            "11.00",
+            "11.55",
+            "12.50"
+        ]
+
+        const days = [
+            "",
+            "LUN",
+            "MAR",
+            "MER",
+            "GIO",
+            "VEN",
+            "SAB"
+        ]
+
+
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            sel1 = document.getElementById("sel1")
+
+            fetch("../teachersLessons.json").then(data=>{return data.json()}).then(res=>{
+                sel1.onchange = function(){
+                    
+                    let teacherName = teacherNamesSorted[sel1.selectedIndex]
+
+                    if (typeof (history.pushState) != "undefined") {
+                        var obj = {
+                        Title: "Orario Luigi Di Savoia",
+                        Url: "?teacher="+teacherName
+                        };
+                        history.pushState(obj, obj.Title, obj.Url);
+                    }
+
+                    let teacherLessonsData = data[teacherName]
+                    console.log(teacherLessonsData)
+
+                    let allLessonsNames = []
+                    let allLessonsSquares = []
+
+
+                    let table = document.getElementsByTagName("tbody")[0]
+                    table.innerHTML = ""
+                    let r = document.createElement("tr")
+                    for (var day of days){
+                        let c = document.createElement("td")
+                        c.textContent = day
+                        r.appendChild(c)
+                    }
+                    table.appendChild(r)
+                    for (var row of teacherLessonsData){
+                        let r = document.createElement("tr")
+                        let c = document.createElement("td")
+                        c.textContent = hours[teacherLessonsData.indexOf(row)]
+                        r.appendChild(c)
+                        for (var lesson of row["lessons"]){
+
+                            if (!allLessonsNames.includes(lesson["class"]) && lesson["class"] != "" && lesson["class"] != "None"){
+                                allLessonsNames.push(lesson["class"])
+                            }
+                            
+                            let c = document.createElement("td")
+
+                            let p1 = document.createElement("p")
+                            let p2 = document.createElement("p")
+                            let p3 = document.createElement("p")
+                            
+
+                            p1.textContent = lesson["room"]
+                            p2.textContent = lesson["subject"]
+                            p3.innerHTML = "<a href='/students/?class="+ lesson["class"] + "'>"+lesson["class"]+"</a>"
+                            
+
+                            if (lesson["room"] == "None"){    
+                                p1.textContent = ""   
+                                p2.textContent = ""
+                                p3.textContent = ""
+                            }
+
+                            c.appendChild(p1)
+                            c.appendChild(p2)
+                            c.appendChild(p3)
+                            r.appendChild(c)
+                            allLessonsSquares.push(c)
+                        }
+                        table.appendChild(r)
+                    }
+
+
+                    console.log(allLessonsNames)
+                    for (var i of allLessonsSquares){
+                        let index = allLessonsNames.indexOf(i.getElementsByTagName("p")[2].textContent)
+                        console.log(i.getElementsByTagName("p")[1].textContent)
+                        i.style.backgroundColor = Object.keys(colors)[index]
+                        i.style.color = colors[Object.keys(colors)[index]]
+                        for (var a of i.getElementsByTagName("a")){
+                                a.style.color = colors[Object.keys(colors)[index]]
+                        }
+                    }
+
+
+                }
+
+
+                data=res
+                teacherNamesSorted = Object.keys(data).sort()
+                for (var i of Object.keys(data).sort()){
+                    let o = document.createElement("option")
+                    o.value = i
+                    o.innerText = i
+                    sel1.appendChild(o)
+                }
+                
+                if (Object.keys(data).includes(selectedTeacher)){
+                    sel1.value = selectedTeacher
+                    sel1.onchange()
+                }
+                else{
+                    sel1.onchange()
+                }
+
+            })
+
+        });
+    </script>
+</body>
+</html>

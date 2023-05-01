@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orario Luigi Di Savoia</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1 onclick="document.location='/home'">Orario Luigi Di Savoia</h1>
+    <div class="spacer"></div>
+    <div class="container">
+        <select id="sel1">
+        </select>
+        <select id="sel2">
+        </select>
+        <select id="sel3">
+        </select>
+    </div>
+    <div class="spacer"></div>
+
+    <table>
+        <tbody>
+        </tbody>
+    </table>
+
+
+    <script>
+        const queryString = window.location.search;
+        console.log(queryString);
+        const urlParams = new URLSearchParams(queryString);
+        var selectedClass = urlParams.get("class")
+
+        let data = {}
+        let lessonsData = {}
+        let sel1;
+        let sel2;
+        let sel3;
+
+        const colors = {
+            "#FFC7B7": "black",
+            "#B5EAD7": "black",
+            "#C5C1FF": "black",
+            "#FFF7B7": "black",
+            "#FFB2D9": "black",
+            "#FFD8B7": "black",
+            "#FFC6E7": "black",
+            "#D9C1B7": "black",
+            "#E2E2E2": "black",
+            "#626262": "white",
+            "#C5E5E5": "black",
+            "#99B2DD": "black",
+            "#F2C2B7": "black",
+            "#C2D1B7": "black",
+            "#D8B2D9": "black",
+            "#E5D8C2": "black",
+            "#F7C5FF": "black",
+            "#FFC2E2": "black",
+            "#B7E2C2": "black",
+            "#E2C2B7": "black"
+        }
+
+        
+        const hours = [
+            "8.05",
+            "8.55",
+            "9.50",
+            "11.00",
+            "11.55",
+            "12.50"
+        ]
+
+        const days = [
+            "",
+            "LUN",
+            "MAR",
+            "MER",
+            "GIO",
+            "VEN",
+            "SAB"
+        ]
+
+
+
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            sel1 = document.getElementById("sel1")
+            sel2 = document.getElementById("sel2")
+            sel3 = document.getElementById("sel3")
+            
+            fetch("../classesLessons.json").then(data=>{return data.json()}).then(res=>{
+                lessonsData = res;
+                fetch("../classes.json").then(data=>{return data.json()}).then(res=>{
+                    sel1.onchange = function(){
+                        let sel = Object.keys(data)[sel1.selectedIndex]
+                        sel2.innerHTML = ""
+                        sel3.innerHTML = ""
+                        for (var i of Object.keys(data[sel])){
+                            let o = document.createElement("option")
+                            o.value = i
+                            o.innerText = i
+                            sel2.appendChild(o)
+                        }
+                        sel2.onchange()
+                    }
+                    sel2.onchange = function(){
+                        let sel = Object.keys(data)[sel1.selectedIndex]
+                        let section = Object.keys(data[sel])[sel2.selectedIndex]
+                        
+                        sel3.innerHTML = ""
+                        for (var i of data[sel][section]){
+                            let o = document.createElement("option")
+                            o.value = i
+                            o.innerText = i
+                            sel3.appendChild(o)
+                        }
+                        sel3.onchange()
+                    }
+                    sel3.onchange = function(){
+                        
+                        let number = Object.keys(data)[sel1.selectedIndex]
+                        let spec = Object.keys(data[number])[sel2.selectedIndex]
+                        let sec = data[number][spec][sel3.selectedIndex]
+                        let name = number + spec+ "_" + sec
+                        console.log(name)
+
+                        if (typeof (history.pushState) != "undefined") {
+                            var obj = {
+                            Title: "Orario Luigi Di Savoia",
+                            Url: "?class="+name
+                            };
+                            history.pushState(obj, obj.Title, obj.Url);
+                        }
+
+                        let classLessonsData = lessonsData[name]
+                        console.log(classLessonsData)
+
+                        let allLessonsNames = []
+                        let allLessonsSquares = []
+
+
+                        let table = document.getElementsByTagName("tbody")[0]
+                        table.innerHTML = ""
+                        let r = document.createElement("tr")
+                        for (var day of days){
+                            let c = document.createElement("td")
+                            c.textContent = day
+                            r.appendChild(c)
+                        }
+                        table.appendChild(r)
+                        for (var row of classLessonsData){
+                            let r = document.createElement("tr")
+                            let c = document.createElement("td")
+                            c.textContent = hours[classLessonsData.indexOf(row)]
+                            r.appendChild(c)
+                            for (var lesson of row["lessons"]){
+
+                                if (!allLessonsNames.includes(lesson["subject"]) && lesson["subject"] != ""){
+                                    allLessonsNames.push(lesson["subject"])
+                                }
+                                
+                                let c = document.createElement("td")
+
+                                let p1 = document.createElement("p")
+                                let p2 = document.createElement("p")
+                                let p3 = document.createElement("p")
+                                
+
+                                p1.textContent = lesson["classroom"]
+                                p2.textContent = lesson["subject"]
+                                
+
+                                for(let i = 0; i < lesson["teachers"].length; i++) {
+                                    p3.innerHTML += `<a href="/teachers/?teacher=${lesson["teachers"][i].replace("'", "\'")}">${lesson["teachers"][i]}</a>`
+                                    if (i != lesson["teachers"].length - 1){
+                                        p3.innerHTML += " - "
+                                    }   
+                                }
+
+
+                                if (lesson["classroom"] == "None"){    
+                                    p1.textContent = ""   
+                                    p2.textContent = ""
+                                    p3.textContent = ""
+                                }
+
+                                c.appendChild(p1)
+                                c.appendChild(p2)
+                                c.appendChild(p3)
+                                r.appendChild(c)
+                                allLessonsSquares.push(c)
+                            }
+                            table.appendChild(r)
+                        }
+
+
+
+                        for (var i of allLessonsSquares){
+                            let index = allLessonsNames.indexOf(i.getElementsByTagName("p")[1].textContent)
+                            i.style.backgroundColor = Object.keys(colors)[index]
+                            i.style.color = colors[Object.keys(colors)[index]]
+                            for (var a of i.getElementsByTagName("a")){
+                                a.style.color = colors[Object.keys(colors)[index]]
+                            }
+                        }
+
+
+                    }
+
+
+                    data=res
+                    for (var i of Object.keys(data)){
+                        let o = document.createElement("option")
+                        o.value = i
+                        o.innerText = i
+                        sel1.appendChild(o)
+                    }
+                    
+                    if (Object.keys(lessonsData).includes(selectedClass)){
+                        sel1.value = selectedClass[0]
+                        sel1.onchange()
+                        sel2.value = selectedClass.split("_")[0].replace(selectedClass[0], "")
+                        sel2.onchange()
+                        sel3.value = selectedClass.split("_")[1]
+                        sel3.onchange()
+                    }
+                    else{
+                        sel1.onchange()
+                    }
+
+                })
+            })
+
+        });
+    </script>
+</body>
+</html>
