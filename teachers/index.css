@@ -8,8 +8,9 @@ body {
 body h1 {
   padding-top: 5vh;
   font-size: 5vw;
-  width: 100vw;
-  text-align: center;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
   cursor: pointer;
 }
 body .spacer {
@@ -40,6 +41,8 @@ body .container select {
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   font-size: 2vw;
+  max-height: 150px; /* set the maximum height of the dropdown menu */
+  overflow-y: auto; /* allow the dropdown menu to scroll */
 }
 body .container select option {
   font-family: "Montserrat", sans-serif;
