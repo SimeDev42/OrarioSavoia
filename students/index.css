@@ -5,38 +5,19 @@ body {
   width: 100vw;
   overflow-x: hidden;
 }
-body .vertAdContainer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 19%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-left: solid 5px black;
-}
-body .vertAdContainer .vertAd {
-  border: solid 5px black;
-}
-body .main {
-  position: absolute;
-  top: 0;
-  width: 80%;
-}
-body .main h1 {
+body h1 {
   padding-top: 5vh;
   font-size: 5vw;
-  width: 100%;
+  width: 100vw;
   text-align: center;
   cursor: pointer;
 }
-body .main .spacer {
+body .spacer {
   height: 15vw;
   max-height: 15vh;
 }
-body .main .container {
-  width: 100%;
+body .container {
+  width: 100vw;
   height: auto;
   display: flex;
   flex-direction: row;
@@ -45,14 +26,14 @@ body .main .container {
   align-items: center;
   gap: 1.5vw;
 }
-body .main .container * {
+body .container * {
   outline: none;
   border-radius: 10px;
   border-style: solid;
   border-width: 3px;
   border-color: black;
 }
-body .main .container select {
+body .container select {
   aspect-ratio: 3;
   max-width: 10vw;
   width: 20vh;
@@ -60,13 +41,13 @@ body .main .container select {
   font-weight: 600;
   font-size: 2vw;
 }
-body .main .container select option {
+body .container select option {
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
   text-align: center;
   font-size: 1vw;
 }
-body .main .container button {
+body .container button {
   cursor: pointer;
   aspect-ratio: 3;
   max-width: 10vw;
@@ -75,12 +56,12 @@ body .main .container button {
   font-weight: 600;
   font-size: 2vw;
 }
-body .main .container select:focus, body .main .container button:focus {
+body .container select:focus, body .container button:focus {
   border-color: aquamarine;
 }
-body .main table {
+body table {
   margin: auto;
-  width: 90%;
+  width: 90vw;
   max-width: 100vw;
   height: 50vh;
   border: solid 5px black;
@@ -89,44 +70,44 @@ body .main table {
   padding: 0;
   overflow-x: auto;
 }
-body .main table tr td {
+body table tr td {
   margin: 0;
   height: 5vh;
   padding: 0;
   border: solid 1px black;
 }
-body .main table tr td p {
+body table tr td p {
   font-size: 1vw;
 }
-body .main table tr td p a {
+body table tr td p a {
   color: black;
 }
-body .main table tr td p a:link {
+body table tr td p a:link {
   text-decoration: none;
 }
-body .main table tr td p a:visited {
+body table tr td p a:visited {
   text-decoration: none;
 }
-body .main table tr td p a:hover {
+body table tr td p a:hover {
   text-decoration: none;
 }
-body .main table tr td p a:active {
+body table tr td p a:active {
   text-decoration: none;
 }
 @media screen and (max-width: 650px) {
-  body .main h1 {
+  body h1 {
     font-size: 8vw;
   }
-  body .main .container select {
+  body .container select {
     max-width: 30vw;
     width: 30vw;
     font-size: 4vw;
   }
-  body .main table {
+  body table {
     border: none;
     width: 100vw;
   }
-  body .main table tr td p {
+  body table tr td p {
     font-size: 1.5vw;
   }
 }/*# sourceMappingURL=index.css.map */
